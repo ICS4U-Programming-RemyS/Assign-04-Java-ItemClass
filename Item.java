@@ -1,11 +1,11 @@
 /**
- * This class represents an Item with price, quantity, and stock.
- * It includes methods to calculate total cost, tax, discount, and stock status.
- *
- * @author Remy
- * @version 1.0
- * @since 2025-05-24
- */
+* This class represents an Item with price, quantity, and stock.
+* It includes methods to calculate total cost, tax, discount, and stock status.
+*
+* @author Remy
+* @version 1.0
+* @since 2025-05-24
+*/
 public class Item {
     /**.
      * Name attribute for the item.
@@ -23,6 +23,14 @@ public class Item {
      * Stock attribute for the item.
      */
     private int stock = 0;
+    /**.
+     * TaxRate attribute for the item.
+     */
+    private double taxRate = 0;
+    /**.
+     * DiscountRate attribute for the item.
+     */
+    private double discountRate = 0;
 
     /**
      * Constructor to initialize an Item.
@@ -30,13 +38,30 @@ public class Item {
      * @param name Name of the item
      * @param price Price per unit
      * @param quantity Quantity being purchased
+     * @param stock Amount of certain item in store
+     * @param taxRate Tax percentage on item
+     * @param discountRate Discount percentage on item
      */
-    public Item(final String name, final double price, final int quantity) {
+    public Item(final String name, final double price, final int quantity,
+                final int stock, final double taxRate,
+                final double discountRate) {
+        // Set the name of the item
         this.name = name;
+
+        // Set the price per unit
         this.price = price;
+
+        // Set the quantity being purchased
         this.quantity = quantity;
-        // Default stock value
-        this.stock = 10;
+
+        // Set the available stock
+        this.stock = stock;
+
+        // Set the tax rate to be applied on the total price
+        this.taxRate = taxRate;
+
+        // Set the discount rate to be applied on the total price
+        this.discountRate = discountRate;
     }
 
     /**
@@ -51,10 +76,8 @@ public class Item {
 
     /**
      * Calculates and prints the tax based on the given rate.
-     *
-     * @param taxRate The tax rate (e.g., 0.13 for 13%)
      */
-    public void calculateTax(final double taxRate) {
+    public void calculateTax() {
         // Calculate tax based on price, quantity, and tax rate
         double tax = price * quantity * taxRate;
         // Calculate total cost including tax
@@ -66,11 +89,8 @@ public class Item {
 
     /**
      * Calculates and prints the total cost after applying a discount.
-     *
-     * @param discountRate The discount rate (e.g., 0.10 for 10%)
-     * @param taxRate The tax rate (e.g., 0.13 for 13%)
      */
-    public void getDiscountedCost(final double discountRate, final double taxRate) {
+    public void getDiscountedCost() {
         // Calculate total cost before discount
         double total = price * quantity;
         // Calculate the discount
@@ -86,25 +106,61 @@ public class Item {
     }
 
     /**
-     * Gets the name of the item.
-     *
-     * @return The name of the item
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
      * Displays the stock status based on
      * the purchase quantity and current stock.
      */
     public void getStockStatus() {
         // Check quantity is less than or equal to the stock
         if (quantity <= stock) {
-            System.out.println("Stock status: In stock");
+            System.out.println("Stock status: Sufficient Stock");
         } else {
             // If quantity is greater than stock
-            System.out.println("Stock status: Out of stock");
+            System.out.println("Stock status: Insufficient Stock");
+        }
+    }
+
+}
+
+// Create child class of item class
+// Used https://www.w3schools.com/java/ref_keyword_extends.asp
+class PerishableItem extends Item {
+
+    /**.
+     * shelfLifeInDays attribute for the item.
+     */
+    private int shelfLifeInDays = 0;
+
+    /**
+     * Constructor for the PerishableItem class.
+     *
+     * @param name Name of the item
+     * @param price Price per unit
+     * @param quantity Quantity being purchased
+     * @param stock Available stock
+     * @param taxRate Tax rate to apply
+     * @param discountRate Discount rate to apply
+     * @param shelfLifeInDays Number of days before expiring
+     */
+    public PerishableItem(final String name, final double price,
+                final int quantity,
+                final int stock, final double taxRate,
+                final double discountRate, final int shelfLifeInDays) {
+        // Call the constructor of the parent class
+        // to initialize common item attributes
+        super(name, price, quantity, stock, taxRate, discountRate);
+
+        // Initialize the shelf life specific to the perishable item
+        this.shelfLifeInDays = shelfLifeInDays;
+    }
+
+    public void isExpired() {
+        // Check if the shelfLifeInDays is less than 0
+        if (shelfLifeInDays < 0) {
+            // Display that the perishable item is expired
+            System.out.println("The item is expired\n");
+        } else {
+            // Display that the perishable item is not expired
+            System.out.println("The item is not expired\n");
         }
     }
 }

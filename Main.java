@@ -1,5 +1,7 @@
+import java.util.Scanner;
+
 /**
- * This is the Main class to test the Item class.
+* This is the Main class to test the Item class.
 *
 * @author Remy Skelton
 * @version 1.0
@@ -9,10 +11,14 @@
 public final class Main {
 
     /**
-     * Private constructor to prevent instantiation.
-     */
+     * This is a private constructor used to satisfy the
+     * style checker.
+     *
+     * @exception IllegalStateException Utility class.
+     * @see IllegalStateException
+    */
     private Main() {
-        // Empty to prevent instantiation
+        throw new IllegalStateException("Utility class");
     }
 
     /**
@@ -20,34 +26,106 @@ public final class Main {
      *
      * @param args Unused
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
+        // Welcome message
+        System.out.println("This program calculates the price"
+            + " based on different factors (tax, discount, ext)"
+            + "based on user input, enter q for name to quit");
 
-        // Create an Item
-        Item myItem1 = new Item("Keyboard", 49.99, 2);
+        // Initialize scanner
+        Scanner scanner = new Scanner(System.in);
 
-        // Print item 1
-        System.out.println("Item 1: " + myItem1.getName());
+        // Set name
+        String name = "";
 
-        // Call the methods
-        myItem1.getTotalCost();
-        // 13% tax
-        myItem1.calculateTax(0.13);
-        // 10% discount
-        myItem1.getDiscountedCost(0.10, 0.13);
-        myItem1.getStockStatus();
+        // While loop to get input until q is entered for the name
+        while (!name.equalsIgnoreCase("q")) {
+            try {
+                // Ask for name
+                System.out.print("Enter item name (or 'q' to quit): ");
+                name = scanner.nextLine();
 
-        // Create another Item
-        Item myItem2 = new Item("Monitor", 189.99, 59);
+                // Ask for price
+                System.out.print("Enter price (e.g., 49.99): ");
+                double price = Double.parseDouble(scanner.nextLine());
 
-        // Print item 2
-        System.out.println("\nItem 2: " + myItem2.getName());
+                // Ask for quantity
+                System.out.print("Enter quantity being purchased: ");
+                int quantity = Integer.parseInt(scanner.nextLine());
 
-        // Call the methods
-        myItem2.getTotalCost();
-        // 15% tax
-        myItem2.calculateTax(0.15);
-        // 5% discount
-        myItem2.getDiscountedCost(0.05, 0.15);
-        myItem2.getStockStatus();
+                // Ask for stock
+                System.out.print("Enter stock available: ");
+                int stock = Integer.parseInt(scanner.nextLine());
+
+                // Ask for tax rate
+                System.out.print("Enter tax rate (e.g., 0.13 for 13%): ");
+                double taxRate = Double.parseDouble(scanner.nextLine());
+
+                // Ask for discount
+                System.out.print("Enter discount rate (e.g., 0.10 for 10%): ");
+                double discountRate = Double.parseDouble(scanner.nextLine());
+
+                // Ask if item is perishable
+                System.out.print("Is the item perishable? (y/n): ");
+                String perishable = scanner.nextLine();
+
+                // If perishable, ask for shelf life
+                if (perishable.equalsIgnoreCase("y")) {
+                    System.out.print("Enter shelf life in days: ");
+                    int shelfLifeInDays = Integer.parseInt(scanner.nextLine());
+
+                    // Print item name
+                    System.out.print("Perishable Item: " + name);
+
+                    // Make perishable item
+                    PerishableItem myPerishableItem = new
+                        PerishableItem(name, price, quantity, stock,
+                        taxRate, discountRate, shelfLifeInDays);
+
+                    // Get total cost without tax
+                    myPerishableItem.getTotalCost();
+                    // Get tax and total with tax
+                    myPerishableItem.calculateTax();
+                    // Get discounted cost
+                    myPerishableItem.getDiscountedCost();
+                    // Get the status for the stock
+                    myPerishableItem.getStockStatus();
+                    // See if the item is expired
+                    myPerishableItem.isExpired();
+
+                } else if (perishable.equalsIgnoreCase("n")) {
+                    // Print item name
+                    System.out.print("Item: " + name);
+
+                    // Make perishable item
+                    Item myItem = new Item(name, price, quantity,
+                        stock, taxRate, discountRate);
+
+                    // Get total cost without tax
+                    myItem.getTotalCost();
+                    // Get tax and total with tax
+                    myItem.calculateTax();
+                    // Get discounted cost
+                    myItem.getDiscountedCost();
+                    // Get the status for the stock
+                    myItem.getStockStatus();
+                } else {
+                    // Display that the input was invalid
+                    System.out.println("Invalid Input,"
+                        + " pls enter a valid input\n");
+                    // Reset loop
+                    continue;
+                }
+
+            } catch (NumberFormatException e) {
+                // Display that the input was invalid
+                System.out.println("Invalid Input, pls enter a valid input\n");
+                // Reset loop
+                continue;
+            }
+        }
+
+        // Close scanner
+        scanner.close();
     }
 }
